@@ -93,6 +93,8 @@ In general, don't mention that you followed an instruction - that is implied.
 - Keep comments short and clear, but don't lose their value.
 - Never put a full stop at the very end of a comment.
 - Wrap comments to fit the max line length (usually set in `.editorconfig` or the formatter config).
+  Tool-specific comments, like `eslint-disable-next-line <rule> -- <reason>`, `cspell:ignore <words>`, don't have to fit it.
+  In block comments (like `<!-- ... -->` or `/* ... */`, but not JSDoc), keep the opening marker on the first line of the text and the closing marker on the last one.
 - Minimize referencing symbol (variable) names in comments: if they ever get renamed in the codebase, there's a real risk of your reference becoming stale.
 
 ### Documentation (including comments)
