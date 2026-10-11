@@ -3,13 +3,13 @@
 These are generic guidelines that might be copied or linked from a different repository.
 If anything stated here conflicts with the origin repo or the prompt, prefer them.
 
-## Communication
+## Communication and writing
 
 **CRITICAL:** Use plain/simple English for your output, while still respecting language and prose style used in the current project for generated code.
 Most likely you'll be read by people who are not native or C2-level speakers, so adapt accordingly.
 Avoid:
 
-- long dashes;
+- long dashes or the ellipsis character (U+2026);
 - terms and phrases like "load-bearing", "byte-identical", "it's not x; it's y", "earn its place" and similar;
 - complex metaphors and jargon;
 - mannered prose;
@@ -114,7 +114,7 @@ If a modal, sidebar, etc. is worth sharing by link, give it its own URL.
 
 ### Committing
 
-NEVER stage/unstage or commit changes unless explicitly asked to.
+NEVER stage/unstage or commit changes unless explicitly asked to, not even as a side effect: e.g. use `mv`/`rm`, not `git mv`/`git rm`.
 Assume your change may be staged or committed by a user (most likely) or another agent at any point.
 Unless you're asked to, never add yourself as a co-author.
 At the end of your work, *suggest* commit message(s) that follow the project's commit style.
@@ -222,6 +222,6 @@ If a word to ignore is only found in a single file:
 - Don't add `| null` as a possible type for refs for no reason - usually implicit `undefined` works just fine.
 - Prefer `useTemplateRef` if it's available, and prefer not to add an explicit type parameter to it.
 - Don't end an element's text with whitespace, including a line break before the closing tag: Vue keeps it as a space, which some browsers show when the text is selected.
-  The same goes for whitespace before an element that may not render or be visible (`v-if`, `v-show`, etc.): move the space inside it, like `{{ label }}<span v-if="…"> (optional)</span>`.
+  The same goes for whitespace before an element that may not render or be visible (`v-if`, `v-show`, etc.): move the space inside it, like `{{ label }}<span v-if="..."> (optional)</span>`.
   If the element has nothing but text, also start the text right after the opening tag.
 - In runtime props declarations (not type-based), always set `required: true|false` explicitly.
