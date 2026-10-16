@@ -1,5 +1,15 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.5
+
+### Patch Changes
+
+- [`a116125`](https://github.com/andreww2012/ai-guidelines/commit/a11612579bd5457af03355cd85b89accac1a6ae8) - Guidelines: wrapped block comments like `<!-- ... -->` now keep their markers on the text lines, and comments for tools, like `eslint-disable-next-line` or `cspell:ignore`, no longer have to fit the max line length
+
+- [`2d55fa5`](https://github.com/andreww2012/ai-guidelines/commit/2d55fa502237f6345ee7f1be3e1330ad58151285) - Guidelines: added a rule against the ellipsis character, and the rule against staging changes now also covers side effects, like those of `git mv` and `git rm`
+
+- [`042220b`](https://github.com/andreww2012/ai-guidelines/commit/042220bd59a57d7c1dd75284fccbdb470160eac7) - Guidelines: added rules for empty string checks, units in names, utility packages, agent memory, CI-only tools, Tailwind classes, `undefined` inline snapshots, comments at the root of Vue templates and wrapping dynamic text
+
 ## 0.2.4
 
 ### Patch Changes
