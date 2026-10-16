@@ -61,8 +61,11 @@ In general, don't mention that you followed an instruction - that is implied.
   In JS files that are not type-checked, the read-only requirement doesn't apply.
 - Prefer `Array#reduce` over creating an object and modifying its properties in a loop.
 - When a symbol is only used once, prefer to inline it unless it is non-trivial or its name conveys meaning the value alone doesn't (e.g. don't inline `const DEFAULT_SORTING = 'rank'` even if `DEFAULT_SORTING` is only used once).
+  This also applies to things like Vue's `computed`s.
 - Prefer `Array#forEach` over `for` loops, unless a loop is better by a meaningful metric (performance, ergonomics, etc.).
 - Prefer `...(condition && {property: ...})` over `...(condition ? {property: ...} : {})` or `property: condition ? ... : undefined` (use the last form only when the key must exist even if its value is `undefined`).
+- If `!== ''`/`=== ''` work the same as `.length > 0`/`.length === 0`, prefer the latter.
+- Put units in names: `MAX_SIZE_BYTES` or `DURATION_MS`, not `MAX_SIZE` or `DURATION`.
 
 ### Performance
 
@@ -89,7 +92,7 @@ In general, don't mention that you followed an instruction - that is implied.
 ### Comments
 
 - Only write comments that add real value, such as explaining *truly* non-obvious choices or behavior, which is very hard to understand from code alone.
-  Don't repeat what the code already says.
+  Never repeat what the code already says: if someone reading the code for the first time wouldn't learn anything new from the comment, drop it.
 - Keep comments short and clear, but don't lose their value.
 - Never put a full stop at the very end of a comment.
 - Wrap comments to fit the max line length (usually set in `.editorconfig` or the formatter config).
@@ -111,6 +114,8 @@ On catalog and search pages, sync filter values and the search query with URL qu
 Prefer `q` as the name of the search query parameter.
 Prefer `snake_case` for query parameter names.
 If a modal, sidebar, etc. is worth sharing by link, give it its own URL.
+
+For containers with dynamic text, use `overflow-wrap: anywhere` unless you genuinely need something else, and test them with very long words and links.
 
 ## Workflow
 
@@ -185,14 +190,21 @@ If [`@antfu/ni` commands](https://raw.githubusercontent.com/antfu-collective/ni/
 
 Avoid editing generated files, including package managers' lockfiles, unless there's a good reason to do otherwise.
 
+If you need a utility or a utility type, first look for it in the project's own code and its direct dependencies (common candidates: `es-toolkit`, `type-fest`, `@andreww2012/unutils`).
+
+Prefer not to use your memory: save anything that may help other people working on this repo to `AGENTS.md`/`CLAUDE.md` instead.
+
 ## Testing tools, linters and checkers
 
-When the task is done, run the available tools on *all changed* files (not only source files!), unless it's not possible or you're told otherwise.
+When the task is done, run *all* the available tools on *all changed* files - take the list of changed files from version control, e.g. `git status`.
 Ignore the pre-existing unrelated issues.
 Prefer the tool's `package.json` script if you can limit it to the changed files (usually by passing their paths).
 Otherwise, call the tool directly on the changed files, with the same options the script uses.
 
 The commonly used tools are as follows (may and will vary depending on a project): `tsc`, `vue-tsc`, `eslint`, `oxlint`, `prettier`, `oxfmt`, `vitest`, `knip`, `cspell` (use `--no-progress --no-summary`), dependency vulnerability checker (if the lockfile was modified), for example `pnpm audit --audit-level high` (usually only high+ vulnerabilities are important to fix).
+Some tools may only run in CI (for example, the `lychee` link checker), so check its config too.
+Run them locally anyway, unless it's impossible (not installed, wrong platform) or takes too much time, memory or CPU.
+If you skip a tool, say so.
 
 Note: TypeScript checkers don't report type errors in files with a `@ts-nocheck` comment, so check such files in other ways.
 
@@ -210,10 +222,12 @@ If a word to ignore is only found in a single file:
 
 - To write a CLI, prefer `cleye`, unless a new dependency is unwanted or another tool was suggested.
   Always set `strictFlags: true` when using it.
-- If you're asked to create a changeset (<https://changesets.dev/>), always use its underlying name generator, `human-id`, for file names.
+- If you're asked to create a changeset (<https://changesets.dev>), always use its underlying name generator, `human-id`, for file names.
   Don't use the imperative mood in changesets, i.e. "Add `foo`" form should never be used.
   Keep changesets short: go straight to the main point and skip details most readers don't need.
   Never end them with a full stop.
+- Keep Tailwind classes in markup, not in script strings: tools usually can't lint, sort or check them there.
+- It's strictly forbidden to end up with ``toMatchInlineSnapshot(`undefined`)`` when using testing frameworks.
 
 ### Vue
 
@@ -227,3 +241,4 @@ If a word to ignore is only found in a single file:
   The same goes for whitespace before an element that may not render or be visible (`v-if`, `v-show`, etc.): move the space inside it, like `{{ label }}<span v-if="..."> (optional)</span>`.
   If the element has nothing but text, also start the text right after the opening tag.
 - In runtime props declarations (not type-based), always set `required: true|false` explicitly.
+- Don't put HTML comments at the root of `<template>`: Vue keeps them only in dev mode, where they make the component a fragment.
