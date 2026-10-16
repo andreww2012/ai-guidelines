@@ -8,12 +8,15 @@ saveTypes: true
 
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeExclude: # []
-  - eslint-config-un@1.0.0-rc.4
+  - eslint-config-un@1.0.0-rc.5
+  - eslint-plugin-jsdoc@65.3.8
+  - eslint@10.13.0
 minimumReleaseAgeExcludePrune: true
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
-trustPolicyExclude: []
+trustPolicyExclude: # []
+  - lefthook@2.2.2
 
 audit:
   ignore: # []
@@ -21,7 +24,7 @@ audit:
   ignorePrune: true
 
 allowBuilds:
-  lefthook@2.2.1: true
+  lefthook@2.2.2: true
 
   esbuild: false
   unrs-resolver: false
@@ -32,9 +35,3 @@ strictPeerDependencies: false
 catalogs:
   format:
     oxfmt: 0.71.0
-
-overrides:
-  # Format Markdown code blocks with the same oxfmt version as all other files
-  eslint-plugin-format>oxfmt: 'catalog:format'
-  # Only used by its Prettier rule. Otherwise, `eslint-config-un` would think Prettier is used
-  eslint-plugin-format>prettier: '-'

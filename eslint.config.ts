@@ -1,27 +1,15 @@
 import {eslintConfig} from 'eslint-config-un';
-import {
-  GLOB_JS_TS_X_EXTENSION,
-  GLOB_MARKDOWN,
-  GLOB_YML_YAML_EXTENSION,
-} from 'eslint-config-un/globs';
 import {forbidImportingFromUtilityLibraries} from 'eslint-config-un/snippets';
 import oxfmtConfig from './oxfmt.config.ts';
 
 export default eslintConfig({
   ignores: ['CHANGELOG.md'],
   mode: 'lib',
-  // typeInfoRules: {
-  //   allowDefaultProject: ['*.config.*ts'],
-  // },
   defaultConfigsStatus: 'misc-enabled',
   configs: {
-    fileProgress: true,
     format: {
-      files: [
-        // TODO replace with `GLOB_MARKDOWN_SUPPORTED_CODE_BLOCKS` from eslint-config-un
-        // once it's exported
-        `${GLOB_MARKDOWN}/**/*.{${GLOB_JS_TS_X_EXTENSION},json,jsonc,json5,${GLOB_YML_YAML_EXTENSION}}`,
-      ],
+      files: [],
+      configFencedCodeBlocks: true,
       formatter: [
         'oxfmt',
         {
@@ -37,12 +25,7 @@ export default eslintConfig({
       requireModuleExtensions: true,
     },
     markdown: {
-      // Uses Prettier with default options, which conflicts with oxfmt above
-      configFormatFencedCodeBlocks: false,
-      configSentencesPerLine: {
-        // Putting every sentence on its own line causes line wraps in the changelog
-        ignores: ['.changeset/**/*.md'],
-      },
+      configSentencesPerLine: true,
     },
 
     // False positives:
