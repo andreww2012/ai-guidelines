@@ -30,9 +30,13 @@ In general, don't mention that you followed an instruction - that is implied.
 
 - Use `const` instead of `let` whenever possible.
 - Use arrow functions whenever possible.
-- Avoid common shorthands like `str`, `arr`, `cls`, `brk`, `err`, `val`, `pkg`, `dir`, etc.
-  Use full words.
-  The only exceptions are: `dict`, `ctx`, `acc`, `fn`, `docs` (when it's shorthand for "documentation", not "document"), `dev`, `param`, index variables like `i`/`j`/etc, `coeff`, `env`.
+- Use full words instead of shorthands:
+  - ❌ `str`, `arr`, `cls`, `brk`, `err`, `val`, `pkg`, `dir`, etc.
+
+  Exceptions:
+  - ✅ `acc`, `char`, `coeff`, `ctx`, `dev`, `dict`, `env`, `fn`, `impl`, `param`
+  - ✅ `docs` (when it's shorthand for "documentation", not "document")
+  - ✅ index variables like `i`/`j`/etc.
 - Never omit curly braces around blocks (like `if`, `else`, etc.)
 - Let the type system infer types whenever possible: prefer implicit/inferred return types.
   Especially avoid:
