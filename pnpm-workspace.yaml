@@ -5,12 +5,17 @@ packages:
 saveExact: true
 autoDedupe: true
 saveTypes: true
+lockfile:
+  # Records `autoDedupe`, so that installs don't resolve the lockfile again
+  includeResolutionSettings: true
 
 minimumReleaseAge: 960 # 16 hours in minutes
+minimumReleaseAgeStrict: false # Auto-adds too-new versions to the exclude list instead of prompting or failing
 minimumReleaseAgeExclude: # []
   - eslint-config-un@1.0.0-rc.5
   - eslint-plugin-jsdoc@65.3.8
   - eslint@10.13.0
+  - actions-up@2.0.0
 minimumReleaseAgeExcludePrune: true
 
 trustPolicy: no-downgrade
