@@ -1,5 +1,11 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.6
+
+### Patch Changes
+
+- [`4f93cde`](https://github.com/andreww2012/ai-guidelines/commit/4f93cde09a96024764e3cb0dafb017b414a9631c) - Guidelines: `char` and `impl` are now allowed shorthands
+
 ## 0.2.5
 
 ### Patch Changes
