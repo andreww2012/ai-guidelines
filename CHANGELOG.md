@@ -1,5 +1,13 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.6
+
+### Patch Changes
+
+- [`4f93cde`](https://github.com/andreww2012/ai-guidelines/commit/4f93cde09a96024764e3cb0dafb017b414a9631c) - Guidelines: `char` and `impl` are now allowed shorthands
+
+- [`d94bfc0`](https://github.com/andreww2012/ai-guidelines/commit/d94bfc0ad1e709a1869a83439d91abe180d2baa1) - Guidelines: added rules for updating dependencies, big files, regression tests, `.json` imports, curly quotes and text that only makes sense with the session context; issue drafts now follow the hosting platform rules and include a link for reporting
+
 ## 0.2.5
 
 ### Patch Changes
