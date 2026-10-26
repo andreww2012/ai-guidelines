@@ -1,5 +1,5 @@
-import {existsSync} from 'node:fs';
 import * as prompts from '@clack/prompts';
+import {pathExistsSync} from '../utils.ts';
 
 export class AbortError extends Error {
   constructor(message = 'Aborted', options?: ErrorOptions) {
@@ -17,7 +17,7 @@ export const handleCancel = <T>(value: T | typeof prompts.CANCEL_SYMBOL) => {
 };
 
 export const confirmProjectRoot = async () => {
-  if (existsSync('.git')) {
+  if (pathExistsSync('.git')) {
     return;
   }
 

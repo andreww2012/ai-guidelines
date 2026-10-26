@@ -1,9 +1,9 @@
-import {existsSync} from 'node:fs';
 import fs from 'node:fs/promises';
 import packageJson from '../package.json' with {type: 'json'};
 import {setup} from '../src/cli/setup.ts';
 import {getInstruction, readDocument} from '../src/documents.ts';
 import {setupGuidelines} from '../src/setup.ts';
+import {pathExistsSync} from '../src/utils.ts';
 import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from './helpers.ts';
 
 // eslint-disable-next-line vitest/prefer-import-in-mock -- the mock doesn't follow the module types
@@ -31,7 +31,7 @@ describe('setup', () => {
       ['link the guidelines', 'remote'],
     ]);
 
-    expect(existsSync('AGENTS.md')).toBe(true);
+    expect(pathExistsSync('AGENTS.md')).toBe(true);
   });
 
   it('aborts outside of the project root if the user does not confirm', async () => {
@@ -41,7 +41,7 @@ describe('setup', () => {
       'Aborted',
     );
 
-    expect(existsSync('AGENTS.md')).toBe(false);
+    expect(pathExistsSync('AGENTS.md')).toBe(false);
   });
 
   it('copies the guidelines and links them from a new AGENTS.md', async () => {
@@ -81,7 +81,7 @@ describe('setup', () => {
         `https://raw.githubusercontent.com/andreww2012/ai-guidelines/${tag}/.agents/guidelines.md`,
       ),
     );
-    expect(existsSync('.agents')).toBe(false);
+    expect(pathExistsSync('.agents')).toBe(false);
   });
 
   it('adds the instructions to the beginning of the existing AGENTS.md', async () => {
@@ -96,7 +96,7 @@ describe('setup', () => {
     await expect(readFile('AGENTS.md')).resolves.toBe(
       `${getInstruction('./.agents/guidelines.md')}\n${EXISTING_AGENTS_FILE_CONTENT}`,
     );
-    expect(existsSync('.agents/guidelines.md')).toBe(true);
+    expect(pathExistsSync('.agents/guidelines.md')).toBe(true);
   });
 
   it('aborts if the user does not want to change the existing AGENTS.md', async () => {
@@ -110,7 +110,7 @@ describe('setup', () => {
     ).rejects.toThrow('Aborted');
 
     await expect(readFile('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
-    expect(existsSync('.agents')).toBe(false);
+    expect(pathExistsSync('.agents')).toBe(false);
   });
 
   it('asks about AGENTS.md again if it was created during the setup', async () => {
@@ -147,7 +147,7 @@ describe('setup', () => {
     ).rejects.toThrow('Aborted');
 
     await expect(readFile('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
-    expect(existsSync('.agents')).toBe(false);
+    expect(pathExistsSync('.agents')).toBe(false);
   });
 
   it('does not accept a path to an existing file', async () => {
@@ -211,7 +211,7 @@ describe('setupGuidelines', () => {
     await setupGuidelines({link: 'remote', cwd: 'project'});
 
     await expect(readFile('project/AGENTS.md')).resolves.toBe(getInstruction());
-    expect(existsSync('project/.agents')).toBe(false);
+    expect(pathExistsSync('project/.agents')).toBe(false);
   });
 
   it('fails if the copy of the guidelines already exists', async () => {
@@ -221,6 +221,6 @@ describe('setupGuidelines', () => {
     await expect(setupGuidelines({cwd: 'project'})).rejects.toThrow('EEXIST');
 
     await expect(readFile('project/.agents/guidelines.md')).resolves.toBe('My guidelines');
-    expect(existsSync('project/AGENTS.md')).toBe(false);
+    expect(pathExistsSync('project/AGENTS.md')).toBe(false);
   });
 });

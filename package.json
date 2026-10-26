@@ -80,7 +80,6 @@
   },
   "devDependencies": {
     "@andreww2012/npm-check-updates-config": "0.1.0",
-    "@andreww2012/unutils": "0.2.0",
     "@antfu/ni": "30.6.0",
     "@arethetypeswrong/cli": "0.18.5",
     "@changesets/changelog-github": "1.0.1",
@@ -109,6 +108,7 @@
     "tsdown": "0.23.2",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript7": "npm:typescript@7.0.2",
+    "utilery": "0.3.0",
     "vitest": "5.0.5"
   },
   "engines": {

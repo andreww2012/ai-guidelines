@@ -1,7 +1,7 @@
-import {existsSync} from 'node:fs';
 import * as prompts from '@clack/prompts';
 import {getDocumentPath} from '../documents.ts';
 import {AGENTS_FILE, setupGuidelines} from '../setup.ts';
+import {pathExistsSync} from '../utils.ts';
 import {AbortError, confirmProjectRoot, handleCancel} from './utils.ts';
 
 const DEFAULT_GUIDELINES_PATH = getDocumentPath('guidelines');
@@ -32,7 +32,7 @@ export const setup = async () => {
     }),
   );
 
-  const hadAgentsFile = existsSync(AGENTS_FILE);
+  const hadAgentsFile = pathExistsSync(AGENTS_FILE);
   if (hadAgentsFile) {
     await confirmPrepending();
   }
@@ -45,7 +45,7 @@ export const setup = async () => {
             placeholder: DEFAULT_GUIDELINES_PATH,
             defaultValue: DEFAULT_GUIDELINES_PATH,
             validate: (value) =>
-              existsSync(value || DEFAULT_GUIDELINES_PATH)
+              pathExistsSync(value || DEFAULT_GUIDELINES_PATH)
                 ? 'The file already exists. To update it, use the `update` command'
                 : undefined,
           }),
@@ -53,10 +53,10 @@ export const setup = async () => {
       : undefined;
 
   // The files could have been created while the user was answering
-  if (!hadAgentsFile && existsSync(AGENTS_FILE)) {
+  if (!hadAgentsFile && pathExistsSync(AGENTS_FILE)) {
     await confirmPrepending();
   }
-  if (guidelinesPath && existsSync(guidelinesPath)) {
+  if (guidelinesPath && pathExistsSync(guidelinesPath)) {
     throw new AbortError(`${guidelinesPath} already exists`);
   }
 

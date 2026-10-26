@@ -21,7 +21,7 @@ export default eslintConfig({
     },
     import: {
       // Bundled, so it doesn't have to be in `dependencies`
-      extraneousDependenciesCheck: {whitelist: ['@andreww2012/unutils']},
+      extraneousDependenciesCheck: {whitelist: ['utilery']},
       requireModuleExtensions: true,
     },
     markdown: {
@@ -41,7 +41,7 @@ export default eslintConfig({
           {
             patterns: [
               forbidImportingFromUtilityLibraries({
-                packageNames: {'@andreww2012/unutils': true},
+                packageNames: {utilery: true},
                 message:
                   'Please do not use this package directly, import utilities from `src/utils.ts` instead',
               }),

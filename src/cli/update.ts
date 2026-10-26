@@ -1,9 +1,8 @@
-import {existsSync} from 'node:fs';
 import fs from 'node:fs/promises';
 import * as prompts from '@clack/prompts';
 import {DOCUMENTS, type DocumentName, getDocumentPath} from '../documents.ts';
 import {getNewContent} from '../update.ts';
-import {arrayIncludes, hasUncommittedChanges} from '../utils.ts';
+import {arrayIncludes, hasUncommittedChanges, pathExistsSync} from '../utils.ts';
 import {AbortError, confirmProjectRoot, handleCancel} from './utils.ts';
 
 const updateInteractively = async (
@@ -23,7 +22,7 @@ const updateInteractively = async (
     );
   const filePath = customPath || getDocumentPath(document);
 
-  if (!existsSync(filePath)) {
+  if (!pathExistsSync(filePath)) {
     throw new AbortError(`${filePath} doesn't exist`);
   }
 
