@@ -11,20 +11,18 @@ lockfile:
 
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeStrict: false # Auto-adds too-new versions to the exclude list instead of prompting or failing
-minimumReleaseAgeExclude: # []
-  - eslint-config-un@1.0.0-rc.5
-  - eslint-plugin-jsdoc@65.3.8
-  - eslint@10.13.0
-  - actions-up@2.0.0
+minimumReleaseAgeExclude: []
 minimumReleaseAgeExcludePrune: true
 
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days in minutes
-trustPolicyExclude: # []
+trustPolicyExclude:
+  # []
   - lefthook@2.2.2
 
 audit:
-  ignore: # []
+  ignore:
+    # []
     - GHSA-ch52-4w7c-c8xp # `http-cache-semantics` from `eslint-config-un` has no patched version yet
   ignorePrune: true
 
@@ -36,7 +34,3 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
-
-catalogs:
-  format:
-    oxfmt: 0.71.0

@@ -8,15 +8,15 @@ pre-push:
     cspell:
       run: pnpm exec cspell --exclude '**/.*' --no-must-find-files {push_files}
     knip:
-      run: nr knip
+      run: pnpm run knip
     types:
-      run: nr ts
+      run: pnpm run ts
 
 post-merge: &install-on-lockfile-change
   commands:
     install:
       glob: '{pnpm-lock.yaml,pnpm-workspace.yaml,patches/*}'
-      run: ni
+      run: pnpm i
 post-checkout: *install-on-lockfile-change
 
 pre-commit:
