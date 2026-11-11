@@ -11,4 +11,6 @@ export default defineConfig({
   entry: ['src/cli.ts', 'src/index.ts'],
   unbundle: true,
   env: {DOCUMENTS_COMMIT_HASH: documentsCommitHash},
+  publint: {strict: true},
+  attw: {level: 'error'},
 });
