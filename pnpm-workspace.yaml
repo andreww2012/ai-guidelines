@@ -12,7 +12,8 @@ lockfile:
 minimumReleaseAge: 960 # 16 hours in minutes
 minimumReleaseAgeStrict: false # Auto-adds too-new versions to the exclude list instead of prompting or failing
 minimumReleaseAgeExclude: # []
-  - utilery@0.3.0
+  - eslint-plugin-github-action@0.5.0
+  - knip@6.45.1
 minimumReleaseAgeExcludePrune: true
 
 trustPolicy: no-downgrade
@@ -35,3 +36,7 @@ allowBuilds:
 
 dedupePeers: true
 strictPeerDependencies: false
+
+peerDependencyRules:
+  allowedVersions:
+    eslint-config-un@1.0.0-rc.7>eslint-plugin-github-action: '>=0.5.0 && < 1'
