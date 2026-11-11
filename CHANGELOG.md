@@ -1,5 +1,11 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.7
+
+### Patch Changes
+
+- [`00496e7`](https://github.com/andreww2012/ai-guidelines/commit/00496e7aca7d1385a2f8e5963f24dbf6b3620547) - Guidelines: added rules for tool-specific comments, test data, full-word names, suggested commit messages, the past tense in changesets and the writing style on the hosting platform
+
 ## 0.2.6
 
 ### Patch Changes
