@@ -6,8 +6,8 @@ import {readFileSafe, toRelativeLink} from './utils.ts';
 export const AGENTS_FILE = 'AGENTS.md';
 
 /**
- * Adds the instruction that links the guidelines to the beginning of `AGENTS.md`, or creates the file.
- * With the local link, also copies the guidelines into the project, and fails if the copy already exists
+ * Adds the instruction that links the guidelines to the beginning of `AGENTS.md`, or creates it.
+ * With the local link, also copies the guidelines into the project and fails if the copy exists
  */
 export const setupGuidelines = async ({
   link = 'local',
@@ -22,8 +22,11 @@ export const setupGuidelines = async ({
 } = {}) => {
   const absoluteGuidelinesPath = path.resolve(cwd, guidelinesPath);
   if (link === 'local') {
-    await fs.mkdir(path.dirname(absoluteGuidelinesPath), {recursive: true});
-    await fs.writeFile(absoluteGuidelinesPath, await readDocument('guidelines'), {flag: 'wx'});
+    const [content] = await Promise.all([
+      readDocument('guidelines'),
+      fs.mkdir(path.dirname(absoluteGuidelinesPath), {recursive: true}),
+    ]);
+    await fs.writeFile(absoluteGuidelinesPath, content, {flag: 'wx'});
   }
 
   const instruction = getInstruction(

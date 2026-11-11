@@ -1,11 +1,10 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import packageJson from '../package.json' with {type: 'json'};
+import {invariant} from './utils.ts';
 
 const commitHashFromBuild = process.env.DOCUMENTS_COMMIT_HASH;
-if (!commitHashFromBuild) {
-  throw new Error('DOCUMENTS_COMMIT_HASH was not set during the build');
-}
+invariant(commitHashFromBuild, 'DOCUMENTS_COMMIT_HASH was not set during the build');
 
 const GIT_EXTENSION_REGEX = /\.git$/;
 

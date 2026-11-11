@@ -10,7 +10,8 @@ lockfile:
   includeResolutionSettings: true
 
 minimumReleaseAge: 960 # 16 hours in minutes
-minimumReleaseAgeStrict: false # Auto-adds too-new versions to the exclude list instead of prompting or failing
+# Auto-adds too-new versions to the exclude list instead of prompting or failing
+minimumReleaseAgeStrict: false
 minimumReleaseAgeExclude: # []
   - eslint-plugin-github-action@0.5.0
   - knip@6.45.1
@@ -23,7 +24,8 @@ trustPolicyExclude: # []
 
 audit:
   ignore: # []
-    - GHSA-ch52-4w7c-c8xp # `http-cache-semantics` from `eslint-config-un` has no patched version yet
+    # `http-cache-semantics` from `eslint-config-un` has no patched version yet
+    - GHSA-ch52-4w7c-c8xp
   ignorePrune: true
 
 allowBuilds:

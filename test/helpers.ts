@@ -5,7 +5,10 @@ import {maybeCall} from '../src/utils.ts';
 
 type AnswerValue = string | boolean;
 
-/** Part of the expected prompt message and the answer, or a function to run while the prompt is shown */
+/**
+ * Part of the expected prompt message and the answer.
+ * The answer can be a function that runs while the prompt is shown
+ */
 type Answer = [message: string, answer: AnswerValue | (() => Promise<AnswerValue>)];
 
 const pendingAnswers: Answer[] = [];

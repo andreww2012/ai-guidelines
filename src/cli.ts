@@ -51,16 +51,17 @@ await cli(
             description: `Update a document copied into the project to the version from this package (documents: ${DOCUMENTS.join(', ')})`,
           },
         },
-        (argv) => handleErrors(update(argv._.document, argv.flags.path)),
+        (parsedArguments) =>
+          handleErrors(update(parsedArguments._.document, parsedArguments.flags.path)),
       ),
     ],
   },
-  (argv) => {
-    if (argv._.length > 0) {
-      consola.error(`Unknown command: ${argv._.join(' ')}`);
+  (parsedArguments) => {
+    if (parsedArguments._.length > 0) {
+      consola.error(`Unknown command: ${parsedArguments._.join(' ')}`);
       process.exitCode = 1;
     }
 
-    argv.showHelp();
+    parsedArguments.showHelp();
   },
 );
