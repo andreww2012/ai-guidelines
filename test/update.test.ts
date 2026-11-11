@@ -15,7 +15,7 @@ const OUTDATED_GUIDELINES = '# Guidelines\n\nOld guidelines\n';
 
 const CHANGED_GUIDELINES = '# Guidelines\n\nMy guidelines\n';
 
-const git = (...parameters: string[]) => exec('git', parameters);
+const git = (...arguments_: string[]) => exec('git', arguments_);
 
 const readFile = (filePath: string) => fs.readFile(filePath, 'utf8');
 
@@ -24,9 +24,8 @@ const updateGuidelines = () => update('guidelines', undefined);
 describe('update', () => {
   beforeEach(async () => {
     await enterTemporaryDirectory();
-    await fs.mkdir('.agents');
+    await Promise.all([git('init'), fs.mkdir('.agents')]);
     await fs.writeFile(GUIDELINES_PATH, OUTDATED_GUIDELINES);
-    await git('init');
     await git('add', '.');
     await git(
       '-c',
@@ -113,8 +112,10 @@ describe('update', () => {
   });
 
   it('does not check for uncommitted changes outside of a git repository', async () => {
-    await fs.rm('.git', {recursive: true});
-    await fs.writeFile(GUIDELINES_PATH, CHANGED_GUIDELINES);
+    await Promise.all([
+      fs.rm('.git', {recursive: true}),
+      fs.writeFile(GUIDELINES_PATH, CHANGED_GUIDELINES),
+    ]);
 
     await runWithAnswers(updateGuidelines, [['not the project root', true]]);
 
@@ -153,6 +154,17 @@ describe('updateDocument', () => {
 
   it('resolves to false if the document is up to date', async () => {
     const content = await readDocument('guidelines');
+    await fs.writeFile('project/ai.md', content);
+
+    await expect(updateDocument('guidelines', {path: 'ai.md', cwd: 'project'})).resolves.toBe(
+      false,
+    );
+
+    await expect(readFile('project/ai.md')).resolves.toBe(content);
+  });
+
+  it('resolves to false if the document only has different line endings', async () => {
+    const content = (await readDocument('guidelines')).replaceAll('\n', '\r\n');
     await fs.writeFile('project/ai.md', content);
 
     await expect(updateDocument('guidelines', {path: 'ai.md', cwd: 'project'})).resolves.toBe(

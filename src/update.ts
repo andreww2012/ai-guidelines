@@ -2,13 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {type DocumentName, getDocumentPath, readDocument} from './documents.ts';
 
-/** Resolves to the content to update the copy of the document with, or `undefined` if it's up to date */
+const normalizeContent = (content: string) => content.replaceAll('\r\n', '\n').trim();
+
+/** Resolves to the new content for the copy of the document, or `undefined` if it's up to date */
 export const getNewContent = async (document: DocumentName, filePath: string) => {
   const [currentContent, newContent] = await Promise.all([
     fs.readFile(filePath, 'utf8'),
     readDocument(document),
   ]);
-  return currentContent.trim() === newContent.trim() ? undefined : newContent;
+  return normalizeContent(currentContent) === normalizeContent(newContent) ? undefined : newContent;
 };
 
 /**
