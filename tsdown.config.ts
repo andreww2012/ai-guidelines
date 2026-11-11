@@ -9,5 +9,6 @@ invariant(documentsCommitHash, 'Could not find the last commit that changed the 
 
 export default defineConfig({
   entry: ['src/cli.ts', 'src/index.ts'],
+  unbundle: true,
   env: {DOCUMENTS_COMMIT_HASH: documentsCommitHash},
 });
