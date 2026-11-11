@@ -39,7 +39,7 @@
     "prepack": "nr build",
     "u": "ncu",
     "u:m": "ncu -t minor",
-    "u:pm": "ncu --dep packageManager",
+    "u:pm": "pnpm self-update",
     "u:actions": "actions-up",
     "deps:audit": "pnpm audit --audit-level high",
     "deps:audit:fix": "nr deps:audit --fix override",

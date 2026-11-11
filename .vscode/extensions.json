@@ -6,7 +6,6 @@
     "streetsidesoftware.code-spell-checker",
     "webpro.vscode-knip",
     "vitest.explorer",
-    // "bradlc.vscode-tailwindcss",
   ],
   // cspell:enable
 }
