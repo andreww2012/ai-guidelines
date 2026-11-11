@@ -7,29 +7,42 @@ export default eslintConfig({
   mode: 'lib',
   defaultConfigsStatus: 'misc-enabled',
   configs: {
+    eslintComments: {
+      requireDescriptions: true,
+    },
     format: {
       files: [],
-      configFencedCodeBlocks: true,
-      formatter: [
-        'oxfmt',
-        {
-          bracketSpacing: oxfmtConfig.bracketSpacing,
-          printWidth: oxfmtConfig.printWidth,
-          singleQuote: oxfmtConfig.singleQuote,
-        },
-      ],
+      configFencedCodeBlocks: {
+        formatter: [
+          'oxfmt',
+          {
+            bracketSpacing: oxfmtConfig.bracketSpacing,
+            printWidth: oxfmtConfig.printWidth,
+            singleQuote: oxfmtConfig.singleQuote,
+          },
+        ],
+      },
     },
     import: {
-      // Bundled, so it doesn't have to be in `dependencies`
-      extraneousDependenciesCheck: {whitelist: ['utilery']},
+      extraneousDependenciesCheck: {
+        // Bundled
+        whitelist: ['utilery'],
+      },
       requireModuleExtensions: true,
     },
     markdown: {
       configSentencesPerLine: true,
     },
-
-    // False positives:
-    zod: false,
+    un: {
+      overrides: {
+        'un/no-type-assertion': 2,
+        'un/prefer-array-for-each': 2,
+        'un/prefer-logical-or': 2,
+      },
+    },
+    vitest: {
+      vitestGlobalsImporting: 'disallow',
+    },
   },
   extraConfigs: [
     {
