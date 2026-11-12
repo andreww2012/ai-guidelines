@@ -1,5 +1,11 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.8
+
+### Patch Changes
+
+- [`1675ee5`](https://github.com/andreww2012/ai-guidelines/commit/1675ee59adffda0e9b72604afc9f8ce047f4e07a) - Guidelines: made more clear that tool-specific comments must cover only the code that causes the report
+
 ## 0.2.7
 
 ### Patch Changes
