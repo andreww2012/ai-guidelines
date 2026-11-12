@@ -252,8 +252,9 @@ These are comments like `eslint-disable-next-line <rule> -- <reason>`, `cspell:i
 - They don't have to satisfy the max line length requirement if that is impossible.
 - Put them in comments of their own.
   Never add them to an existing comment, and never put them into content like strings or commands, unless there is clearly no other way of using them.
-- Prefer minimizing the impact of these comments: for example, a `*-disable-line` comment may accidentally hide more problems than it was supposed to.
-  To do so, you may need to reformat the code around it.
+- Make these comments cover only exactly the code that causes the report, so that they don't hide other problems.
+  For example, a `eslint-disable(-next)-line` comment covers the whole (next) line, which might have other code without issues.
+  In that case, if possible, break (re-format) the code so that the reported part, for example, gets a line of its own.
 
 #### CSpell
 
