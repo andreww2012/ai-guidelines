@@ -53,7 +53,7 @@ If you need a utility or a utility type, first look for it in the project's own 
   - ❌ `str`, `arr`, `cls`, `brk`, `err`, `val`, `pkg`, `dir`, etc.
 
   Exceptions:
-  - ✅ `acc`, `char`, `coeff`, `ctx`, `dev`, `dict`, `env`, `fn`, `impl`, `param`
+  - ✅ `acc`, `char`, `coeff`, `ctx`, `dev`, `dict`, `env`, `fn`, `impl`, `param`, `w/(o)`
   - ✅ `docs` (when it's shorthand for "documentation", not "documents")
   - ✅ index variables like `i`/`j`/etc.
 
@@ -95,6 +95,7 @@ If you need a utility or a utility type, first look for it in the project's own 
 - Prefer reading `.json` files with a static `import` rather than with file system utilities, unless the path is only known at runtime.
 - If `.toSorted()` and `.sort()` work the same, prefer `.sort()`, even if an ESLint rule like `unicorn/no-array-sort` requires the former: it's overly strict.
   The same goes for the other copying methods, like `.toReversed()`.
+  Don't disable such lint rules globally though: they are still useful.
 
 ### Performance
 
@@ -237,6 +238,7 @@ You may use another conventional commit type, like `fix`, `feat`, etc., if it ma
 ## Testing tools, linters and other QA tools
 
 When the task is done, run *all* the available tools on *all changed* files - take the list of changed files from version control, e.g. `git status`.
+Before running them, check the machine's free RAM and CPU to decide whether to run them in an optimal way, likely parallel or one by one.
 Ignore the pre-existing unrelated issues.
 Prefer the tool's `package.json` script if you can limit it to the changed files (usually by passing their paths).
 Otherwise, call the tool directly on the changed files, with the same options the script uses.
@@ -255,6 +257,7 @@ If you encounter a linter error that can be fixed in multiple ways, always weigh
 These are comments like `eslint-disable-next-line <rule> -- <reason>`, `cspell:ignore <words>`, `@ts-expect-error` and others.
 
 - Always include that `<reason>` in ESLint, TypeScript and other tool comments wherever that makes sense.
+  Start it with an uppercase letter.
 - `--` between the directive and the reason is an ESLint requirement, not a general one: other tools have their own syntax.
   If the tool doesn't require a delimiter, don't invent one: separate them with a plain space.
 - They don't have to satisfy the max line length requirement if that is impossible.
@@ -262,7 +265,9 @@ These are comments like `eslint-disable-next-line <rule> -- <reason>`, `cspell:i
   Never add them to an existing comment, and never put them into content like strings or commands, unless there is clearly no other way of using them.
 - Make these comments cover only exactly the code that causes the report, so that they don't hide other problems.
   For example, a `eslint-disable(-next)-line` comment covers the whole (next) line, which might have other code without issues.
-  In that case, if possible, break (re-format) the code so that the reported part, for example, gets a line of its own.
+  In that case, break (re-format) the code so that the reported part gets a line of its own, unless the syntax or the formatter doesn't allow it.
+  To do that, put an argument, an array item, a chained call or the value after `=` on a new line, or move the value into a variable first.
+  Linters don't check this, so before you finish, look at what else is on the lines that these comments cover.
 
 #### CSpell
 

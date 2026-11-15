@@ -17,7 +17,7 @@ export const getNewContent = async (document: DocumentName, filePath: string) =>
  * Updates the copy of the document in the project to the version from this package.
  * Resolves to `false` if the copy is already up to date
  */
-// eslint-disable-next-line unicorn/consistent-boolean-name -- it's an action, the result only tells if it changed anything
+// eslint-disable-next-line unicorn/consistent-boolean-name -- It's an action, the result only tells if it changed anything
 export const updateDocument = async (
   document: DocumentName,
   {

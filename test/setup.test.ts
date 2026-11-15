@@ -6,7 +6,7 @@ import {setupGuidelines} from '../src/setup.ts';
 import {pathExistsSync, readFileSafe} from '../src/utils.ts';
 import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from './helpers.ts';
 
-// eslint-disable-next-line vitest/prefer-import-in-mock -- the mock doesn't follow the module types
+// eslint-disable-next-line vitest/prefer-import-in-mock -- The mock doesn't follow the module types
 vi.mock('@clack/prompts', async () => (await import('./helpers.ts')).promptsMock);
 
 const EXISTING_AGENTS_FILE_CONTENT = '# Project\n';

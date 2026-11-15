@@ -6,7 +6,7 @@ import {updateDocument} from '../src/update.ts';
 import {exec, readFileSafe} from '../src/utils.ts';
 import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from './helpers.ts';
 
-// eslint-disable-next-line vitest/prefer-import-in-mock -- the mock doesn't follow the module types
+// eslint-disable-next-line vitest/prefer-import-in-mock -- The mock doesn't follow the module types
 vi.mock('@clack/prompts', async () => (await import('./helpers.ts')).promptsMock);
 
 const GUIDELINES_PATH = '.agents/guidelines.md';
