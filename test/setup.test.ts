@@ -3,7 +3,7 @@ import packageJson from '../package.json' with {type: 'json'};
 import {setup} from '../src/cli/setup.ts';
 import {getInstruction, readDocument} from '../src/documents.ts';
 import {setupGuidelines} from '../src/setup.ts';
-import {pathExistsSync} from '../src/utils.ts';
+import {pathExistsSync, readFileSafe} from '../src/utils.ts';
 import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from './helpers.ts';
 
 // eslint-disable-next-line vitest/prefer-import-in-mock -- the mock doesn't follow the module types
@@ -12,8 +12,6 @@ vi.mock('@clack/prompts', async () => (await import('./helpers.ts')).promptsMock
 const EXISTING_AGENTS_FILE_CONTENT = '# Project\n';
 
 const tag = `${packageJson.name}@${packageJson.version}`;
-
-const readFile = (filePath: string) => fs.readFile(filePath, 'utf8');
 
 describe('setup', () => {
   beforeEach(async () => {
@@ -50,12 +48,14 @@ describe('setup', () => {
       ['Where to save', '.agents/guidelines.md'],
     ]);
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(getInstruction('./.agents/guidelines.md'));
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(
+      getInstruction('./.agents/guidelines.md'),
+    );
 
-    const guidelines = await readFile('.agents/guidelines.md');
+    const guidelines = await readFileSafe('.agents/guidelines.md');
 
     expect(guidelines).toBe(await readDocument('guidelines'));
-    expect(guidelines.split('\n').slice(0, 4)).toStrictEqual([
+    expect(guidelines?.split('\n').slice(0, 4)).toStrictEqual([
       '# Guidelines',
       '',
       `Source: <https://github.com/andreww2012/ai-guidelines/blob/${tag}/.agents/guidelines.md>`,
@@ -69,14 +69,14 @@ describe('setup', () => {
       ['Where to save', 'docs/ai.md'],
     ]);
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(getInstruction('./docs/ai.md'));
-    await expect(readFile('docs/ai.md')).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(getInstruction('./docs/ai.md'));
+    await expect(readFileSafe('docs/ai.md')).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('links the remote guidelines', async () => {
     await runWithAnswers(setup, [['link the guidelines', 'remote']]);
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(
       getInstruction(
         `https://raw.githubusercontent.com/andreww2012/ai-guidelines/${tag}/.agents/guidelines.md`,
       ),
@@ -93,7 +93,7 @@ describe('setup', () => {
       ['Where to save', '.agents/guidelines.md'],
     ]);
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(
       `${getInstruction('./.agents/guidelines.md')}\n${EXISTING_AGENTS_FILE_CONTENT}`,
     );
     expect(pathExistsSync('.agents/guidelines.md')).toBe(true);
@@ -109,7 +109,7 @@ describe('setup', () => {
       ]),
     ).rejects.toThrow('Aborted');
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
     expect(pathExistsSync('.agents')).toBe(false);
   });
 
@@ -126,7 +126,7 @@ describe('setup', () => {
       ['AGENTS.md already exists', true],
     ]);
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(
       `${getInstruction('./.agents/guidelines.md')}\n${EXISTING_AGENTS_FILE_CONTENT}`,
     );
   });
@@ -146,7 +146,7 @@ describe('setup', () => {
       ]),
     ).rejects.toThrow('Aborted');
 
-    await expect(readFile('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
     expect(pathExistsSync('.agents')).toBe(false);
   });
 
@@ -183,8 +183,8 @@ describe('setup', () => {
       ]),
     ).rejects.toThrow('guidelines.md already exists');
 
-    await expect(readFile('guidelines.md')).resolves.toBe('My guidelines');
-    await expect(readFile('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
+    await expect(readFileSafe('guidelines.md')).resolves.toBe('My guidelines');
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
   });
 });
 
@@ -201,16 +201,18 @@ describe('setupGuidelines', () => {
 
     await setupGuidelines({path: 'docs/ai.md', cwd: 'project'});
 
-    await expect(readFile('project/AGENTS.md')).resolves.toBe(
+    await expect(readFileSafe('project/AGENTS.md')).resolves.toBe(
       `${getInstruction('./docs/ai.md')}\n${EXISTING_AGENTS_FILE_CONTENT}`,
     );
-    await expect(readFile('project/docs/ai.md')).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe('project/docs/ai.md')).resolves.toBe(
+      await readDocument('guidelines'),
+    );
   });
 
   it('links the remote guidelines', async () => {
     await setupGuidelines({link: 'remote', cwd: 'project'});
 
-    await expect(readFile('project/AGENTS.md')).resolves.toBe(getInstruction());
+    await expect(readFileSafe('project/AGENTS.md')).resolves.toBe(getInstruction());
     expect(pathExistsSync('project/.agents')).toBe(false);
   });
 
@@ -220,7 +222,7 @@ describe('setupGuidelines', () => {
 
     await expect(setupGuidelines({cwd: 'project'})).rejects.toThrow('EEXIST');
 
-    await expect(readFile('project/.agents/guidelines.md')).resolves.toBe('My guidelines');
+    await expect(readFileSafe('project/.agents/guidelines.md')).resolves.toBe('My guidelines');
     expect(pathExistsSync('project/AGENTS.md')).toBe(false);
   });
 });

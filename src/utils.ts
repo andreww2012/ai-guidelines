@@ -1,8 +1,11 @@
 import path from 'node:path';
-import {toForwardSlashes} from 'utilery';
+import {attemptAsync} from 'utilery/function';
+import {toForwardSlashes} from 'utilery/path';
 import {exec} from 'utilery/server';
 
-export {arrayIncludes, invariant, maybeCall} from 'utilery';
+export {arrayIncludes} from 'utilery/array';
+export {maybeCall} from 'utilery/function';
+export {invariant} from 'utilery/misc';
 export {exec, pathExistsSync, readFileSafe} from 'utilery/server';
 
 /** Relative link to the file that always starts with `./` or `../` */
@@ -12,10 +15,9 @@ export const toRelativeLink = (directory: string, filePath: string) => {
 };
 
 export const hasUncommittedChanges = async (filePath: string) => {
-  try {
-    return (await exec('git', ['status', '--porcelain', '--', filePath])).stdout.trim().length > 0;
-  } catch {
-    // Not a git repository, or git is not installed
-    return false;
-  }
+  // Fails if it's not a git repository or git is not installed
+  const [, result] = await attemptAsync(() =>
+    exec('git', ['status', '--porcelain', '--', filePath]),
+  );
+  return result != null && result.stdout.trim().length > 0;
 };

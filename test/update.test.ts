@@ -3,7 +3,7 @@ import * as prompts from '@clack/prompts';
 import {update} from '../src/cli/update.ts';
 import {readDocument} from '../src/documents.ts';
 import {updateDocument} from '../src/update.ts';
-import {exec} from '../src/utils.ts';
+import {exec, readFileSafe} from '../src/utils.ts';
 import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from './helpers.ts';
 
 // eslint-disable-next-line vitest/prefer-import-in-mock -- the mock doesn't follow the module types
@@ -16,8 +16,6 @@ const OUTDATED_GUIDELINES = '# Guidelines\n\nOld guidelines\n';
 const CHANGED_GUIDELINES = '# Guidelines\n\nMy guidelines\n';
 
 const git = (...arguments_: string[]) => exec('git', arguments_);
-
-const readFile = (filePath: string) => fs.readFile(filePath, 'utf8');
 
 const updateGuidelines = () => update('guidelines', undefined);
 
@@ -44,13 +42,13 @@ describe('update', () => {
   it('updates the document', async () => {
     await runWithAnswers(updateGuidelines, []);
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('asks for the document if it is not passed', async () => {
     await runWithAnswers(() => update(undefined, undefined), [['Which document', 'guidelines']]);
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('does nothing if the document is up to date, ignoring surrounding whitespace', async () => {
@@ -59,7 +57,7 @@ describe('update', () => {
 
     await runWithAnswers(updateGuidelines, []);
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(content);
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(content);
     expect(prompts.outro).toHaveBeenLastCalledWith(
       `${GUIDELINES_PATH} is already up to date, nothing was updated`,
     );
@@ -70,7 +68,7 @@ describe('update', () => {
 
     await runWithAnswers(updateGuidelines, [['uncommitted changes', true]]);
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('aborts if the user keeps uncommitted changes of the passed document', async () => {
@@ -80,7 +78,7 @@ describe('update', () => {
       runWithAnswers(updateGuidelines, [['uncommitted changes', false]]),
     ).rejects.toThrow('Aborted');
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(CHANGED_GUIDELINES);
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(CHANGED_GUIDELINES);
   });
 
   it('asks for the document again if the user keeps uncommitted changes of the chosen one', async () => {
@@ -96,7 +94,7 @@ describe('update', () => {
       ],
     );
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('updates the document at a custom path, treating untracked files as changed', async () => {
@@ -107,8 +105,8 @@ describe('update', () => {
       [['uncommitted changes', true]],
     );
 
-    await expect(readFile('guidelines.md')).resolves.toBe(await readDocument('guidelines'));
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(OUTDATED_GUIDELINES);
+    await expect(readFileSafe('guidelines.md')).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(OUTDATED_GUIDELINES);
   });
 
   it('does not check for uncommitted changes outside of a git repository', async () => {
@@ -119,7 +117,7 @@ describe('update', () => {
 
     await runWithAnswers(updateGuidelines, [['not the project root', true]]);
 
-    await expect(readFile(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe(GUIDELINES_PATH)).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('aborts if the document does not exist', async () => {
@@ -149,7 +147,7 @@ describe('updateDocument', () => {
   it('updates the document in the passed directory without asking', async () => {
     await expect(updateDocument('guidelines', {path: 'ai.md', cwd: 'project'})).resolves.toBe(true);
 
-    await expect(readFile('project/ai.md')).resolves.toBe(await readDocument('guidelines'));
+    await expect(readFileSafe('project/ai.md')).resolves.toBe(await readDocument('guidelines'));
   });
 
   it('resolves to false if the document is up to date', async () => {
@@ -160,7 +158,7 @@ describe('updateDocument', () => {
       false,
     );
 
-    await expect(readFile('project/ai.md')).resolves.toBe(content);
+    await expect(readFileSafe('project/ai.md')).resolves.toBe(content);
   });
 
   it('resolves to false if the document only has different line endings', async () => {
@@ -171,6 +169,6 @@ describe('updateDocument', () => {
       false,
     );
 
-    await expect(readFile('project/ai.md')).resolves.toBe(content);
+    await expect(readFileSafe('project/ai.md')).resolves.toBe(content);
   });
 });
