@@ -1,5 +1,11 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.9
+
+### Patch Changes
+
+- [`82d7b1e`](https://github.com/andreww2012/ai-guidelines/commit/82d7b1ed87be2488e642c47acbbdb5d63397219d) - Guidelines: added rules for checking the machine's free resources before running QA tools, starting the reason in tool comments with an uppercase letter and not disabling overly strict lint rules globally; `w/` and `w/o` are now allowed shorthands
+
 ## 0.2.8
 
 ### Patch Changes
