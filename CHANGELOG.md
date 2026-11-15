@@ -1,5 +1,13 @@
 # @andreww2012/ai-guidelines
 
+## 0.2.8
+
+### Patch Changes
+
+- [`1675ee5`](https://github.com/andreww2012/ai-guidelines/commit/1675ee59adffda0e9b72604afc9f8ce047f4e07a) - Guidelines: made more clear that tool-specific comments must cover only the code that causes the report
+
+- [`48f528b`](https://github.com/andreww2012/ai-guidelines/commit/48f528b6fd56d979dab5301b13c5fffa7013793d) - Guidelines: added rules for backticks around technical names, mutating array methods like `.sort()`, `as const`, type parameter names, type guards and the delimiter before the reason in tool comments; removed the test data rule
+
 ## 0.2.7
 
 ### Patch Changes
