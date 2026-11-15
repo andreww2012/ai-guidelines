@@ -16,7 +16,11 @@ export const setupGuidelines = async ({
 }: {
   /** `local` copies the guidelines into the project, `remote` links the file on GitHub */
   link?: 'local' | 'remote';
-  /** Where to copy the guidelines, relative to `cwd`. Only used with the local link */
+
+  /**
+   * Where to copy the guidelines, relative to `cwd`.
+   * Only used with the local link
+   */
   path?: string;
   cwd?: string;
 } = {}) => {

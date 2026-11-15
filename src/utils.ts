@@ -13,8 +13,7 @@ export const toRelativeLink = (directory: string, filePath: string) => {
 
 export const hasUncommittedChanges = async (filePath: string) => {
   try {
-    const {stdout} = await exec('git', ['status', '--porcelain', '--', filePath]);
-    return stdout.trim().length > 0;
+    return (await exec('git', ['status', '--porcelain', '--', filePath])).stdout.trim().length > 0;
   } catch {
     // Not a git repository, or git is not installed
     return false;

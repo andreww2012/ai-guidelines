@@ -8,7 +8,7 @@ export class AbortError extends Error {
   }
 }
 
-export const handleCancel = <T>(value: T | typeof prompts.CANCEL_SYMBOL) => {
+export const handleCancel = <Value>(value: Value | typeof prompts.CANCEL_SYMBOL) => {
   if (prompts.isCancel(value)) {
     throw new AbortError();
   }
