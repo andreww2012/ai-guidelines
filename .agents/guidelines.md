@@ -259,7 +259,7 @@ If you have to describe the environment (issue templates often ask for it), leav
 
 If you're asked to update dependencies, update them one by one, but group closely related ones (like `vitest` and `@vitest/*`).
 With each update, remove dependency rules that the new version no longer needs, like minimum release age exceptions, overrides, patches, etc.
-If there are several updates, you may commit each one: this is a deliberate exception to the rule against committing without being asked.
+If there are several updates, you may commit each one, *but only them* - this is a deliberate exception to the rule against committing without being asked.
 
 Start the commit header of each update, including the ones you only suggest, with ``chore(deps): update `package-name` to v<version>`` (unless a different commit style is used).
 You may use another conventional commit type, like `fix`, `feat`, etc., if it makes more sense, and say what has changed in the commit header.
