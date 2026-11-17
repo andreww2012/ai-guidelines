@@ -6,6 +6,15 @@ If anything stated here conflicts with the origin repo or the prompt, prefer the
 Headings only group rules and don't limit where they apply, unless the text says so.
 For example, "Communication and writing" rules apply to your output, docs and code alike.
 
+## Meta
+
+Don't report how extensively you've verified/tested your work - if you feel the need to say it, say *very* briefly.
+
+Don't say that you've been following these guidelines unless it's very important; just follow them.
+In general, don't mention that you followed an instruction - that is implied.
+
+If someone points out that you violated the guidelines, explain why you deviated and suggest how to improve them, so that it's less likely to happen again.
+
 ## Communication and writing
 
 **CRITICAL:** Use plain/simple English for your output, while still respecting language and prose style used in the current project for generated code.
@@ -76,14 +85,13 @@ If you need a utility or a utility type, first look for it in the project's own 
   - ✅ `a ? b : c`, `if (a) { ... } else { ... }`
   - ❌ `!a ? c : b`, `if (!a) { ... } else { ... }`
 - If `||` and `??` operators work the same, prefer using `||`.
-- Use `CONSTANT_CASE` only for constants holding a primitive, a read-only array/object (`as const`, `Object.freeze`, `: Readonly<T>`, etc.), a `Set`/`Map` typed as `ReadonlySet`/`ReadonlyMap` or a `RegExp`, no matter how its values are computed:
+- Use `CONSTANT_CASE` only for constants holding a primitive, a read-only array/object, a `Set`/`Map` typed as `ReadonlySet`/`ReadonlyMap` or a `RegExp`, no matter how its values are computed:
   - ✅ `const FOO = 'bar'`
   - ✅ `const FOO = ['bar', 1 + 2, Math.random()] as const`
-  - ✅ `const FOO = Object.freeze({bar: Math.random()})`
   - ❌ `const FOO = [1, 2, 3]`
   - ❌ `const COLLATOR = new Intl.Collator('ru')`
 
-  Tip: in plain JS files that are still type-checked, mark values as read-only via JSDoc.
+  Prefer making values read-only with types (`: Readonly<T>`, `as const`, or JSDoc in type-checked JS files), not with runtime calls like `Object.freeze`, unless there is no other simple way.
   In JS files that are not type-checked, the read-only requirement doesn't apply.
 - Prefer `Array#reduce` over creating an object and modifying its properties in a loop.
 - When a symbol is only used once, prefer to inline it unless it is non-trivial or its name conveys meaning the value alone doesn't (e.g. don't inline `const DEFAULT_SORTING = 'rank'` even if `DEFAULT_SORTING` is only used once).
@@ -173,6 +181,9 @@ If the user asks you to draft an issue, draft it in the same session (NEVER send
 - with the "Writing on the hosting platform" rules applied;
 - with a direct link where the issue can be reported.
 
+Before running any non-trivial command, check the machine's free resources, primarily RAM and CPU.
+Based on that, decide how to run such commands: in parallel, one by one, etc.
+
 Run all commands through the project's package manager, including one-off binaries: e.g. in a pnpm project, use `pnpm why` and `pnpm (exec|dlx)` instead of `npm why` and `npx`, unless the equivalent is missing.
 If [`@antfu/ni` commands](https://raw.githubusercontent.com/antfu-collective/ni/refs/heads/main/README.md) are available, prefer them over package manager native ones (e.g. `ni` instead of `(p)npm i(nstall)`, `nr` instead of `(p)npm run` and so on).
 
@@ -188,10 +199,11 @@ Assume your change may be staged or committed by a user (most likely) or another
 
 At the end of your work, *suggest* commit message(s) that follow the project's commit style.
 Put each one in its own full-width code block.
+If a message has a body, give two code blocks for it: one with only the header and one with the full message (header and body).
 Check them with the project's commit linter (e.g. `commitlint`), if there is one.
 
-Always put package names inside backticks in commit messages.
 Always use the imperative mood in commit headers.
+Never put a full stop at the very end of a commit body.
 Unless you're allowed/asked to, never add yourself as a co-author.
 
 Use `git stash` only if there's no other way: prefer git worktrees or throwaway repos.
@@ -200,7 +212,7 @@ Use `git stash` only if there's no other way: prefer git worktrees or throwaway 
 
 These rules apply when you are asked to write content on the platform that hosts the repository (issues/discussions/comments/etc. on GitHub/GitLab/etc.).
 
-Use a more casual, less formal writing style.
+The main rule: use a more casual, less formal writing style.
 
 #### AI disclosure
 
@@ -226,6 +238,10 @@ Find out:
 Use the contribution rules, issue templates, recent issues, and maintainer replies as sources.
 If you cannot find this information, assume maintainers are busy people who do not trust AI content: be short and specific, and include only facts you verified.
 
+#### Environment details
+
+If you have to describe the environment (issue templates often ask for it), leave out sensitive details like the OS name/version, unless they actually matter.
+
 ### Updating dependencies
 
 If you're asked to update dependencies, update them one by one, but group closely related ones (like `vitest` and `@vitest/*`).
@@ -238,7 +254,6 @@ You may use another conventional commit type, like `fix`, `feat`, etc., if it ma
 ## Testing tools, linters and other QA tools
 
 When the task is done, run *all* the available tools on *all changed* files - take the list of changed files from version control, e.g. `git status`.
-Before running them, check the machine's free RAM and CPU to decide whether to run them in an optimal way, likely parallel or one by one.
 Ignore the pre-existing unrelated issues.
 Prefer the tool's `package.json` script if you can limit it to the changed files (usually by passing their paths).
 Otherwise, call the tool directly on the changed files, with the same options the script uses.
@@ -264,9 +279,11 @@ These are comments like `eslint-disable-next-line <rule> -- <reason>`, `cspell:i
 - Put them in comments of their own.
   Never add them to an existing comment, and never put them into content like strings or commands, unless there is clearly no other way of using them.
 - Make these comments cover only exactly the code that causes the report, so that they don't hide other problems.
-  For example, a `eslint-disable(-next)-line` comment covers the whole (next) line, which might have other code without issues.
-  In that case, break (re-format) the code so that the reported part gets a line of its own, unless the syntax or the formatter doesn't allow it.
-  To do that, put an argument, an array item, a chained call or the value after `=` on a new line, or move the value into a variable first.
+  For example, an `eslint-disable(-next)-line` comment covers the whole (next) line, which might have other code without issues.
+  In that case, break (re-format) the code so that the reported part is the only code on its line, unless the syntax or the formatter doesn't allow it.
+  To do that, put an argument, an array item, an object property's value, a chained call or the value after `=` on a new line.
+  If the reported part is nested, for example in a call that is itself an argument, break each enclosing call too.
+  Try not to move code into a new variable just for that.
   Linters don't check this, so before you finish, look at what else is on the lines that these comments cover.
 
 #### CSpell
@@ -303,10 +320,3 @@ Use a top-level `cspell:ignore <words>` comment instead if the word occurs more 
   If the element has nothing but text, also start the text right after the opening tag.
 - In runtime props declarations (not type-based), always set `required: true|false` explicitly.
 - Don't put HTML comments at the root of `<template>`: Vue keeps them only in dev mode, where they make the component a fragment.
-
-## Meta
-
-IMPORTANT: don't report how extensively you've verified/tested your work - if you feel the need to say it, say *very* briefly.
-
-Don't say (unless asked explicitly) you have been following these guidelines; just follow them.
-In general, don't mention that you followed an instruction - that is implied.
