@@ -84,11 +84,11 @@
     "@commitlint/cli": "21.2.4",
     "@eslint/config-inspector": "3.5.0",
     "@types/node": "24.19.2",
-    "@vitest/coverage-v8": "5.1.0",
+    "@vitest/coverage-v8": "5.1.1",
     "@vitest/eslint-plugin": "1.6.28",
-    "@vitest/ui": "5.1.0",
+    "@vitest/ui": "5.1.1",
     "actions-up": "2.0.0",
-    "cspell": "10.5.1",
+    "cspell": "10.5.2",
     "eslint": "10.15.0",
     "eslint-config-un": "1.0.0-rc.7",
     "eslint-plugin-github-action": "0.5.0",
@@ -103,7 +103,7 @@
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript7": "npm:typescript@7.1.0-beta",
     "utilery": "0.4.0",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   },
   "engines": {
     "node": "^24.18.0 || >=26.4.0"
@@ -111,7 +111,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.21.0"
+      "version": "12.22.0"
     }
   }
 }
