@@ -129,9 +129,8 @@ If you need a utility or a utility type, first look for it in the project's own 
   If the project doesn't enforce this order with a tool like ESLint, suggest doing so at the end of your work.
 - In general, in *large* lists prefer keeping things alphabetical, if it makes sense and you're not told otherwise.
 - Keep each sentence in Markdown or JSDoc on a separate line, exactly like in this document.
-  Exceptions:
-  - `.changeset/*.md` files, as [changesets](https://github.com/changesets/changesets) would render them differently in the changelog;
-  - content for the hosting platform (issues, comments, etc.) and drafts of it, as GitHub and some other platforms show each line break there as a real one.
+  Exception: text that ends up where each line break is shown as a real one, as GitHub and some other platforms (not GitLab!) do in issues, PRs, discussions, comments and release notes.
+  This includes drafts of such content and files copied there, most commonly `.changeset/*.md` files and issue/PR templates.
 - Use `kebab-case` for file and directory names, unless they should be called differently by convention (like `README.md`, `AGENTS.md`, etc.).
 
 ### Comments
@@ -177,7 +176,7 @@ Keep Tailwind classes in markup, not in script strings: tools usually can't lint
 
 ### General
 
-Before implementing anything, check the repo's `.{agents,claude}/skills` directory for relevant instructions.
+Before implementing anything, check the repo's `.{agents,claude}` directories for relevant instructions/skills.
 
 If someone points out a mistake you made, *proactively* check your changes and the related code for similar or related mistakes.
 
@@ -203,7 +202,8 @@ If [`@antfu/ni` commands](https://raw.githubusercontent.com/antfu-collective/ni/
 
 Avoid editing generated files, including package managers' lockfiles, unless there's a good reason to do otherwise.
 
-Prefer not to use your memory: save anything that may help other people working on this repo to `AGENTS.md`/`CLAUDE.md` instead.
+Prefer not to use your memory: save anything that may help other people working on this repo to `AGENTS.md` instead.
+Keep what you add there as generic and short as reasonably possible: for example, don't name specific commands, files, etc. unless strictly necessary.
 
 ### Version control
 
@@ -278,7 +278,8 @@ If you skip a tool, say so.
 
 Note: TypeScript checkers don't report type errors in files with a `@ts-nocheck` comment, so check such files in other ways.
 
-If you encounter a linter error that can be fixed in multiple ways, always weigh all options INCLUDING disabling the rule for this line (or, much more rarely, for the entire file) before fixing.
+Don't treat a linter rule as a source of truth: quite often it is wrong (rules have false positives or may be misconfigured).
+So before fixing a linter report, always weigh all options INCLUDING disabling the rule for this line (or, much more rarely, for the entire file): that may be more correct than changing the code.
 
 It's strictly forbidden to end up with ``toMatchInlineSnapshot(`undefined`)`` when using testing frameworks.
 
