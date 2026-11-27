@@ -2,7 +2,11 @@ import * as prompts from '@clack/prompts';
 import {pathExistsSync} from '../utils.ts';
 
 export class AbortError extends Error {
-  constructor(message = 'Aborted', options?: ErrorOptions) {
+  constructor(
+    // eslint-disable-next-line unicorn/prefer-options-parameter -- Fine
+    message = 'Aborted',
+    options?: ErrorOptions,
+  ) {
     super(message, options);
     this.name = 'AbortError';
   }

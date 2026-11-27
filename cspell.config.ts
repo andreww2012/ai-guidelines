@@ -1,20 +1,10 @@
-import type {CSpellSettings} from 'cspell';
+import {cspellConfig} from '@andreww2012/cspell-config';
 
-const GLOBALLY_IGNORED_WORDS: Readonly<Record<string, string[]>> = {
-  names: ['andreww', 'cleye', 'utilery', 'worktrees'],
-  misc: ['knipignore'],
-};
-
-export default {
-  useGitignore: true,
-  enableGlobDot: true,
-  ignorePaths: ['**/.gitignore', '**/.git/**', '**/pnpm-lock.yaml', 'patches/**'],
-  dictionaries: ['npm', 'node', 'typescript', 'fullstack'],
-  words: Object.values(GLOBALLY_IGNORED_WORDS).flat(),
-  overrides: [
-    {
-      filename: ['.agents/guidelines.md', 'cspell.config.ts'],
-      words: ['behaviour', 'organisation', 'nstall', 'lockfiles', 'coeff'],
-    },
-  ],
-} satisfies CSpellSettings;
+export default cspellConfig({
+  cwd: import.meta.dirname,
+  ignorePaths: ['.agents/guidelines.md'],
+  words: {
+    names: ['andreww', 'cleye', 'utilery', 'worktrees'],
+    misc: ['knipignore', 'vulns'],
+  },
+});
