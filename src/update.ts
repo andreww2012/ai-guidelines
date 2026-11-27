@@ -1,20 +1,24 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {type DocumentName, getDocumentPath, readDocument} from './documents.ts';
+import {type DocumentName, findExtraSections, getDocumentPath, readDocument} from './documents.ts';
 
 const normalizeContent = (content: string) => content.replaceAll('\r\n', '\n').trim();
 
-/** Resolves to the new content for the copy of the document, or `undefined` if it's up to date */
+/**
+ * Resolves to the new content for the copy of the document with the extra sections it has,
+ * or `undefined` if the copy is up to date
+ */
 export const getNewContent = async (document: DocumentName, filePath: string) => {
-  const [currentContent, newContent] = await Promise.all([
-    fs.readFile(filePath, 'utf8'),
-    readDocument(document),
-  ]);
-  return normalizeContent(currentContent) === normalizeContent(newContent) ? undefined : newContent;
+  const currentContent = normalizeContent(await fs.readFile(filePath, 'utf8'));
+  const newContent = await readDocument(document, {
+    extraSections: findExtraSections(currentContent),
+  });
+  return currentContent === normalizeContent(newContent) ? undefined : newContent;
 };
 
 /**
- * Updates the copy of the document in the project to the version from this package.
+ * Updates the copy of the document in the project to the version from this package,
+ * keeping the extra sections it has.
  * Resolves to `false` if the copy is already up to date
  */
 // eslint-disable-next-line unicorn/consistent-boolean-name -- It's an action, the result only tells if it changed anything

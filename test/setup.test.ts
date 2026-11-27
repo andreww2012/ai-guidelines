@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import packageJson from '../package.json' with {type: 'json'};
 import {setup} from '../src/cli/setup.ts';
 import {getInstruction, readDocument} from '../src/documents.ts';
@@ -10,6 +11,14 @@ import {enterTemporaryDirectory, leaveTemporaryDirectory, runWithAnswers} from '
 vi.mock('@clack/prompts', async () => (await import('./helpers.ts')).promptsMock);
 
 const EXISTING_AGENTS_FILE_CONTENT = '# Project\n';
+
+const NO_EXTRA_SECTIONS = ['extra sections', []] as const;
+
+const writeVuePackageJson = (directory = '.') =>
+  fs.writeFile(
+    path.join(directory, 'package.json'),
+    JSON.stringify({devDependencies: {vue: '3.5.0'}}),
+  );
 
 const tag = `${packageJson.name}@${packageJson.version}`;
 
@@ -27,6 +36,7 @@ describe('setup', () => {
     await runWithAnswers(setup, [
       ['not the project root', true],
       ['link the guidelines', 'remote'],
+      NO_EXTRA_SECTIONS,
     ]);
 
     expect(pathExistsSync('AGENTS.md')).toBe(true);
@@ -46,6 +56,7 @@ describe('setup', () => {
     await runWithAnswers(setup, [
       ['link the guidelines', 'local'],
       ['Where to save', '.agents/guidelines.md'],
+      NO_EXTRA_SECTIONS,
     ]);
 
     await expect(readFileSafe('AGENTS.md')).resolves.toBe(
@@ -67,6 +78,7 @@ describe('setup', () => {
     await runWithAnswers(setup, [
       ['link the guidelines', 'local'],
       ['Where to save', 'docs/ai.md'],
+      NO_EXTRA_SECTIONS,
     ]);
 
     await expect(readFileSafe('AGENTS.md')).resolves.toBe(getInstruction('./docs/ai.md'));
@@ -74,7 +86,7 @@ describe('setup', () => {
   });
 
   it('links the remote guidelines', async () => {
-    await runWithAnswers(setup, [['link the guidelines', 'remote']]);
+    await runWithAnswers(setup, [['link the guidelines', 'remote'], NO_EXTRA_SECTIONS]);
 
     await expect(readFileSafe('AGENTS.md')).resolves.toBe(
       getInstruction(
@@ -91,6 +103,7 @@ describe('setup', () => {
       ['link the guidelines', 'local'],
       ['AGENTS.md already exists', true],
       ['Where to save', '.agents/guidelines.md'],
+      NO_EXTRA_SECTIONS,
     ]);
 
     await expect(readFileSafe('AGENTS.md')).resolves.toBe(
@@ -123,6 +136,7 @@ describe('setup', () => {
           return '.agents/guidelines.md';
         },
       ],
+      NO_EXTRA_SECTIONS,
       ['AGENTS.md already exists', true],
     ]);
 
@@ -142,11 +156,54 @@ describe('setup', () => {
             return '.agents/guidelines.md';
           },
         ],
+        NO_EXTRA_SECTIONS,
         ['AGENTS.md already exists', false],
       ]),
     ).rejects.toThrow('Aborted');
 
     await expect(readFileSafe('AGENTS.md')).resolves.toBe(EXISTING_AGENTS_FILE_CONTENT);
+    expect(pathExistsSync('.agents')).toBe(false);
+  });
+
+  it('adds the chosen extra sections to the copy', async () => {
+    await runWithAnswers(setup, [
+      ['link the guidelines', 'local'],
+      ['Where to save', '.agents/guidelines.md'],
+      ['extra sections', ['vue']],
+    ]);
+
+    await expect(readFileSafe('.agents/guidelines.md')).resolves.toBe(
+      await readDocument('guidelines', {extraSections: ['vue']}),
+    );
+  });
+
+  it('preselects the extra sections for the dependencies in package.json', async () => {
+    await writeVuePackageJson();
+
+    await runWithAnswers(setup, [
+      ['link the guidelines', 'local'],
+      ['Where to save', '.agents/guidelines.md'],
+      ['extra sections', ({initialValues}) => initialValues || []],
+    ]);
+
+    await expect(readFileSafe('.agents/guidelines.md')).resolves.toBe(
+      await readDocument('guidelines', {extraSections: ['vue']}),
+    );
+  });
+
+  it('links the chosen extra sections with the remote guidelines', async () => {
+    await runWithAnswers(setup, [
+      ['link the guidelines', 'remote'],
+      ['extra sections', ['vue']],
+    ]);
+
+    const rawUrl = `https://raw.githubusercontent.com/andreww2012/ai-guidelines/${tag}/.agents`;
+
+    await expect(readFileSafe('AGENTS.md')).resolves.toBe(
+      `Before your first response, you MUST read [the project guidelines](${rawUrl}/guidelines.md) and [the Vue guidelines](${rawUrl}/guidelines/vue.md) in full.
+Follow them in everything you do, even when you are only answering a question.
+`,
+    );
     expect(pathExistsSync('.agents')).toBe(false);
   });
 
@@ -173,6 +230,7 @@ describe('setup', () => {
             return 'guidelines.md';
           },
         ],
+        NO_EXTRA_SECTIONS,
         [
           'AGENTS.md already exists',
           async () => {
@@ -214,6 +272,26 @@ describe('setupGuidelines', () => {
 
     await expect(readFileSafe('project/AGENTS.md')).resolves.toBe(getInstruction());
     expect(pathExistsSync('project/.agents')).toBe(false);
+  });
+
+  it('adds the extra sections for the dependencies in package.json by default', async () => {
+    await writeVuePackageJson('project');
+
+    await setupGuidelines({cwd: 'project'});
+
+    await expect(readFileSafe('project/.agents/guidelines.md')).resolves.toBe(
+      await readDocument('guidelines', {extraSections: ['vue']}),
+    );
+  });
+
+  it('adds only the passed extra sections', async () => {
+    await writeVuePackageJson('project');
+
+    await setupGuidelines({extraSections: [], cwd: 'project'});
+
+    await expect(readFileSafe('project/.agents/guidelines.md')).resolves.toBe(
+      await readDocument('guidelines'),
+    );
   });
 
   it('fails if the copy of the guidelines already exists', async () => {

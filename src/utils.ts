@@ -4,9 +4,11 @@ import {toForwardSlashes} from 'utilery/path';
 import {exec} from 'utilery/server';
 
 export {arrayIncludes} from 'utilery/array';
-export {maybeCall} from 'utilery/function';
+export {type MaybeFn, maybeCall} from 'utilery/function';
 export {invariant} from 'utilery/misc';
-export {exec, pathExistsSync, readFileSafe} from 'utilery/server';
+export {exec, pathExistsSync, readFileSafe, readJsonFileSafe} from 'utilery/server';
+export {allUnionMembers} from 'utilery/ts';
+export type {MaybePromise} from 'utilery/types';
 
 /** Relative link to the file that always starts with `./` or `../` */
 export const toRelativeLink = (directory: string, filePath: string) => {

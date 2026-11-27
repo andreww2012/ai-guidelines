@@ -1,6 +1,6 @@
 import * as prompts from '@clack/prompts';
-import {getDocumentPath} from '../documents.ts';
-import {AGENTS_FILE, setupGuidelines} from '../setup.ts';
+import {EXTRA_SECTIONS, EXTRA_SECTION_TITLES, getDocumentPath} from '../documents.ts';
+import {AGENTS_FILE, detectExtraSections, setupGuidelines} from '../setup.ts';
 import {pathExistsSync} from '../utils.ts';
 import {AbortError, confirmProjectRoot, handleCancel} from './utils.ts';
 
@@ -52,6 +52,20 @@ export const setup = async () => {
         )
       : undefined;
 
+  const detectedExtraSections = await detectExtraSections();
+  const extraSections = handleCancel(
+    await prompts.multiselect({
+      message: 'Which extra sections to add to the guidelines?',
+      options: EXTRA_SECTIONS.map((section) => ({
+        value: section,
+        label: EXTRA_SECTION_TITLES[section],
+        ...(detectedExtraSections.includes(section) && {hint: 'found in package.json'}),
+      })),
+      initialValues: detectedExtraSections,
+      required: false,
+    }),
+  );
+
   // The files could have been created while the user was answering
   if (!hadAgentsFile && pathExistsSync(AGENTS_FILE)) {
     await confirmPrepending();
@@ -60,7 +74,7 @@ export const setup = async () => {
     throw new AbortError(`${guidelinesPath} already exists`);
   }
 
-  await setupGuidelines({link, path: guidelinesPath});
+  await setupGuidelines({link, path: guidelinesPath, extraSections});
 
   prompts.outro(
     guidelinesPath ? `Saved ${guidelinesPath} and linked it from ${AGENTS_FILE}` : 'Done',

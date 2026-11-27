@@ -1,6 +1,7 @@
 # AI guidelines [![npm](https://img.shields.io/npm/v/@andreww2012/ai-guidelines)](https://npmx.dev/@andreww2012/ai-guidelines)
 
 Generic [guidelines](./.agents/guidelines.md) for AI coding agents: communication, code, workflow and tooling.
+Rules for specific tools (currently only Vue) are in [extra sections](./.agents/guidelines), which you can add to the guidelines.
 
 ## Usage
 
@@ -22,8 +23,10 @@ pnpm dlx @andreww2012/ai-guidelines setup
 
 With other package managers, use `npx`, `yarn dlx` or `bunx` instead of `pnpm dlx`. <!-- cspell:disable-line -->
 
-It asks how to link the guidelines and where to save them, then adds the instructions to the beginning of `AGENTS.md` (or creates it).
+It asks how to link the guidelines, where to save them and which extra sections to add, then adds the instructions to the beginning of `AGENTS.md` (or creates it).
 If `AGENTS.md` already exists, it asks before changing it.
+The extra sections for the dependencies in `package.json` are selected by default.
+They are added to the copy of the guidelines, or linked from `AGENTS.md` if you link the guidelines on GitHub.
 
 To update your copy to the latest version:
 
@@ -31,6 +34,7 @@ To update your copy to the latest version:
 pnpm dlx @andreww2012/ai-guidelines update guidelines
 ```
 
+It keeps the extra sections that the copy has.
 If the file has uncommitted changes, it asks before overwriting them.
 Pass `--path` if you saved the file outside of `.agents`.
 Run the CLI with `--help` to see all commands and flags.
@@ -46,6 +50,8 @@ import {setupGuidelines, updateDocument} from '@andreww2012/ai-guidelines';
 await setupGuidelines();
 // Links the file on GitHub instead
 await setupGuidelines({link: 'remote'});
+// Adds only the passed extra sections instead of the ones for the dependencies
+await setupGuidelines({extraSections: ['vue']});
 // Resolves to `false` if the copy is already up to date
 await updateDocument('guidelines');
 ```
@@ -76,6 +82,9 @@ Replace `VERSION` below with the package version you want to use (for example, t
    Follow them in everything you do, even when you are only answering a question.
    ```
 
+To add an extra section, replace its comment in your copy, like `<!-- ai-guidelines section: vue -->`, with the content of its file from [`.agents/guidelines`](./.agents/guidelines).
+Lower its headings to fit the section, so that `# Vue` becomes `#### Vue`.
+
 To get updates, compare your copy with the newer version and update the version in the source link.
 
 #### Link to the file
@@ -86,6 +95,8 @@ Link the raw version of the file from `AGENTS.md`:
 Before your first response, you MUST read [the project guidelines](https://raw.githubusercontent.com/andreww2012/ai-guidelines/@andreww2012/ai-guidelines@VERSION/.agents/guidelines.md) in full.
 Follow them in everything you do, even when you are only answering a question.
 ```
+
+To add extra sections, link them in the same sentence, like `read [the project guidelines](...) and [the Vue guidelines](.../.agents/guidelines/vue.md) in full`.
 
 To get updates, change the version.
 

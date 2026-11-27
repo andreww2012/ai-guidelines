@@ -150,6 +150,16 @@ describe('updateDocument', () => {
     await expect(readFileSafe('project/ai.md')).resolves.toBe(await readDocument('guidelines'));
   });
 
+  it('keeps the extra sections that the document has', async () => {
+    await fs.writeFile('project/ai.md', `${CHANGED_GUIDELINES}\n#### Vue\n\nOld Vue rules\n`);
+
+    await expect(updateDocument('guidelines', {path: 'ai.md', cwd: 'project'})).resolves.toBe(true);
+
+    await expect(readFileSafe('project/ai.md')).resolves.toBe(
+      await readDocument('guidelines', {extraSections: ['vue']}),
+    );
+  });
+
   it('resolves to false if the document is up to date', async () => {
     const content = await readDocument('guidelines');
     await fs.writeFile('project/ai.md', content);
@@ -162,7 +172,10 @@ describe('updateDocument', () => {
   });
 
   it('resolves to false if the document only has different line endings', async () => {
-    const content = (await readDocument('guidelines')).replaceAll('\n', '\r\n');
+    const content = (await readDocument('guidelines', {extraSections: ['vue']})).replaceAll(
+      '\n',
+      '\r\n',
+    );
     await fs.writeFile('project/ai.md', content);
 
     await expect(updateDocument('guidelines', {path: 'ai.md', cwd: 'project'})).resolves.toBe(

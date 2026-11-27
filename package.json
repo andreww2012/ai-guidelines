@@ -31,6 +31,7 @@
   },
   "bin": "dist/cli.mjs",
   "files": [
+    ".agents/guidelines",
     ".agents/guidelines.md",
     "dist"
   ],

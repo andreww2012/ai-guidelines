@@ -1,35 +1,38 @@
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {maybeCall} from '../src/utils.ts';
+import {type MaybeFn, type MaybePromise, maybeCall} from '../src/utils.ts';
 
-type AnswerValue = string | boolean;
+type AnswerValue = string | boolean | readonly string[];
+
+interface PromptOptions {
+  message: string;
+  initialValues?: readonly string[];
+  validate?: (value: string) => string | Error | undefined;
+}
 
 /**
  * Part of the expected prompt message and the answer.
- * The answer can be a function that runs while the prompt is shown
+ * The answer can be a function that runs while the prompt is shown and gets the prompt options
  */
-type Answer = [message: string, answer: AnswerValue | (() => Promise<AnswerValue>)];
+type Answer = readonly [
+  message: string,
+  answer: MaybeFn<MaybePromise<AnswerValue>, [options: PromptOptions]>,
+];
 
 const pendingAnswers: Answer[] = [];
 
 const initialDirectory = process.cwd();
 
-const ask = async ({
-  message,
-  validate,
-}: {
-  message: string;
-  validate?: (value: string) => string | Error | undefined;
-}) => {
+const ask = async (options: PromptOptions) => {
   const [expectedMessage, answerOrGetAnswer] = pendingAnswers.shift() || [];
   if (expectedMessage == null) {
-    throw new Error(`Unexpected prompt: ${message}`);
+    throw new Error(`Unexpected prompt: ${options.message}`);
   }
-  expect(message).toContain(expectedMessage);
+  expect(options.message).toContain(expectedMessage);
 
-  const answer = await maybeCall(answerOrGetAnswer);
-  const validationError = typeof answer === 'string' && validate?.(answer);
+  const answer = await maybeCall(answerOrGetAnswer, options);
+  const validationError = typeof answer === 'string' && options.validate?.(answer);
   if (validationError) {
     throw new Error(`Invalid answer: ${String(validationError)}`);
   }
@@ -45,6 +48,7 @@ export const promptsMock = {
   select: ask,
   confirm: ask,
   text: ask,
+  multiselect: ask,
 };
 
 export const runWithAnswers = async (command: () => Promise<void>, answers: Answer[]) => {

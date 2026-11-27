@@ -2,6 +2,8 @@ export {
   DOCUMENTS,
   type DocumentName,
   documentsCommitHash,
+  EXTRA_SECTIONS,
+  type ExtraSectionName,
   getDocumentPath,
   getDocumentUrl,
   getInstruction,
