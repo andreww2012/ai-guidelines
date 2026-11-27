@@ -67,7 +67,9 @@
     "test:vitest:cov": "nr t:cov run",
     "test": "nr check:deps && nr check && nr test:vitest",
     "ch": "changeset add --message \"___REPLACE_ME___\"",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "contrib:add": "all-contributors add",
+    "contrib:gen": "all-contributors generate"
   },
   "dependencies": {
     "@clack/prompts": "1.9.0",
@@ -75,6 +77,7 @@
     "consola": "3.4.2"
   },
   "devDependencies": {
+    "@all-contributors/cli": "7.1.0",
     "@andreww2012/commitlint-config": "0.2.0",
     "@andreww2012/cspell-config": "0.0.1",
     "@andreww2012/npm-check-updates-config": "0.1.1",
