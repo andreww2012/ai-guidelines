@@ -327,3 +327,4 @@ Always set `strictFlags: true` when using it.
 - Don't sacrifice clarity for that.
   Assume readers haven't seen the diff and don't know the project's context and terms well.
   Say what has changed, not only where.
+- Don't start a changeset with a list item, because changelogs put its first line right after the entry's own bullet, which leaves an extra dash in the text.
